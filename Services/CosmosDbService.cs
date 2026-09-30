@@ -28,4 +28,20 @@ public class CosmosDbService
             message,
             new PartitionKey(message.Category));
     }
+    
+    public async Task<List<SupportMessage>> GetSupportMessagesAsync()
+    {
+        var messages = new List<SupportMessage>();
+
+        var query = _container.GetItemQueryIterator<SupportMessage>(
+            "SELECT * FROM c");
+
+        while (query.HasMoreResults)
+        {
+            var response = await query.ReadNextAsync();
+            messages.AddRange(response);
+        }
+
+        return messages;
+    }
 }

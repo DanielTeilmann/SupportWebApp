@@ -1,0 +1,72 @@
+@page "/create-support"
+@rendermode InteractiveServer
+
+@using SupportWebApp.Models
+@using SupportWebApp.Services
+
+@inject CosmosDbService CosmosDbService
+
+<h3>Opret supporthenvendelse</h3>
+
+<EditForm Model="@supportMessage"
+          OnValidSubmit="@CreateSupportMessage"
+          FormName="CreateSupportForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Navn</label>
+        <InputText class="form-control" @bind-Value="supportMessage.Name" />
+        <ValidationMessage For="() => supportMessage.Name" />
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <InputText class="form-control" @bind-Value="supportMessage.Email" />
+        <ValidationMessage For="() => supportMessage.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label>Telefonnummer</label>
+        <InputText class="form-control" @bind-Value="supportMessage.Phone" />
+        <ValidationMessage For="() => supportMessage.Phone" />
+    </div>
+
+    <div class="mb-3">
+        <label>Beskrivelse</label>
+        <InputTextArea class="form-control" @bind-Value="supportMessage.Description" />
+        <ValidationMessage For="() => supportMessage.Description" />
+    </div>
+
+    <div class="mb-3">
+        <label>Kategori</label>
+        <InputText class="form-control" @bind-Value="supportMessage.Category" />
+        <ValidationMessage For="() => supportMessage.Category" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Opret henvendelse
+    </button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <p class="mt-3">@message</p>
+}
+
+@code {
+    private SupportMessage supportMessage = new();
+    private string message = string.Empty;
+
+    private async Task CreateSupportMessage()
+    {
+        supportMessage.Id = Guid.NewGuid().ToString();
+        supportMessage.DateTime = DateTime.UtcNow;
+
+        await CosmosDbService.CreateSupportMessageAsync(supportMessage);
+
+        message = "Henvendelsen er oprettet.";
+
+        supportMessage = new SupportMessage();
+    }
+}

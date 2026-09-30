@@ -12,6 +12,7 @@ Applikationen giver brugeren mulighed for at:
 - Gemmer suporthenvendelser i Azure Cosmos DB så de kan findes og vises igen på en oversigtsside.
 - Validere inputtet fra brugeren
 
+## Oprettelse af Azure Cosmos DB
 
 Først logger man ind på Azure:
 

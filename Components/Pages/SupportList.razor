@@ -8,6 +8,16 @@
 
 <h3>Supporthenvendelser</h3>
 
+<!-- guide -->
+<select @bind="selectedCategory" @bind:after="CategoryChanged">
+    <option value="Alle">Alle</option>
+    <option value="Teknisk spørgsmål">Teknisk spørgsmål</option>
+    <option value="Reservedele">Reservedele</option>
+    <option value="Forslag">Forslag</option>
+    <option value="Forhandler">Forhandler</option>
+    <option value="Katalog">Katalog</option>
+</select>
+
 @if (supportMessages == null)
 {
     <p>Henter henvendelser...</p>
@@ -47,9 +57,25 @@ else
 
 @code {
     private List<SupportMessage>? supportMessages;
+    
+    // guide
+    private string selectedCategory = "Alle";
 
     protected override async Task OnInitializedAsync()
     {
         supportMessages = await CosmosDbService.GetSupportMessagesAsync();
+    }
+    
+    // guide
+    private async Task CategoryChanged()
+    {
+        if (selectedCategory == "Alle")
+        {
+            supportMessages = await CosmosDbService.GetSupportMessagesAsync();
+        }
+        else
+        {
+            supportMessages = await CosmosDbService.GetSupportMsgByCategoryAsync(selectedCategory);
+        }
     }
 }
